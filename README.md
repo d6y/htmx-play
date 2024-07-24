@@ -4,5 +4,5 @@ Working through [Server-Driven Web Apps with htmx](https://pragprog.com/titles/m
 cargo watch -c -x run
 ```
 
-Then browse to <localhost:3000>
+Then browse to <http://localhost:3000>
 
