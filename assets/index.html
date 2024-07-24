@@ -1,10 +1,12 @@
 <html>
-  <head>
-<title>htmx Demo</title>
-<link rel="stylesheet" href="/assets/styles.css" />
-<script src="https://unpkg.com/htmx.org@2.0.1"></script>
-  </head>
-  <body>
-<button hx-get="/version" hx-target="#version">Get Project Version from Cargo.toml</button>
-<div id="version"></div> </body>
+<head>
+  <title>htmx Demo</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="https://unpkg.com/htmx.org@2.0.1"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <button hx-get="/version" hx-target="#version">Get Project Version from Cargo.toml</button>
+  <div id="version"></div>
+ </body>
 </html>
