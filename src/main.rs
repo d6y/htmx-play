@@ -18,6 +18,9 @@ async fn main() {
         .merge(assets)
         .route("/version", get(version));
 
+    #[cfg(debug_assertions)]
+    let app = app.layer(tower_livereload::LiveReloadLayer::new());
+
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();
@@ -26,7 +29,7 @@ async fn main() {
 }
 
 async fn root(req: axum::http::Request<Body>) -> Response {
-    ServeFile::new("assets/index.html")
+    ServeFile::new("templates/index.html")
         .oneshot(req)
         .await
         .into_response()
