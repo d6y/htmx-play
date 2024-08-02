@@ -1,0 +1,12 @@
+<html>
+<head>
+  <title>htmx demo</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/htmx@2.0.1.min.js"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <button hx-get="/version" hx-target="#version">Get Version from Cargo.toml</button>
+  <div id="version"></div>
+ </body>
+</html>
