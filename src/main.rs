@@ -1,11 +1,11 @@
 use axum::{
-    body::Body,
-    response::{IntoResponse, Response},
+    response::{Html, IntoResponse, Response},
     routing::get,
     Router,
 };
-use tower::ServiceExt;
-use tower_http::services::{ServeDir, ServeFile};
+use tower_http::services::ServeDir;
+
+mod apps;
 
 #[tokio::main]
 async fn main() {
@@ -16,6 +16,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root))
         .merge(assets)
+        .merge(apps::dogs::routes())
         .route("/version", get(version));
 
     #[cfg(debug_assertions)]
@@ -28,11 +29,8 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn root(req: axum::http::Request<Body>) -> Response {
-    ServeFile::new("templates/index.html")
-        .oneshot(req)
-        .await
-        .into_response()
+async fn root() -> Response {
+    Html(include_str!("../templates/index.html")).into_response()
 }
 
 async fn version() -> &'static str {
