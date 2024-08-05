@@ -1,3 +1,5 @@
+use crate::mishap::Mishap;
+use anyhow::anyhow;
 use axum::{
     extract::State,
     response::{Html, IntoResponse, Response},
@@ -5,7 +7,6 @@ use axum::{
     Form, Router,
 };
 use maud::{html, Markup};
-
 use std::{
     collections::HashMap,
     sync::{Arc, RwLock},
@@ -82,22 +83,33 @@ async fn index() -> Response {
     Html(include_str!("../../../templates/dogs.html")).into_response()
 }
 
-async fn add(State(state): State<SharedState>, Form(form): Form<NewDog>) -> Response {
+async fn add(
+    State(state): State<SharedState>,
+    Form(form): Form<NewDog>,
+) -> Result<Response, Mishap> {
     let dog = Dog::new(&form.name, &form.breed);
-    state.write().unwrap().insert(dog.clone());
-    dog_row(&dog).into_response()
+
+    let mut db = state
+        .write()
+        .map_err(|_| Mishap(anyhow!("Write lock fail")))?;
+
+    db.insert(dog.clone());
+    Ok(dog_row(&dog).into_response())
 }
 
-async fn table_rows(State(state): State<SharedState>) -> Response {
-    let frags: Vec<String> = state
+async fn table_rows(State(state): State<SharedState>) -> Result<Response, Mishap> {
+    let dogdb = state
         .read()
-        .unwrap()
+        .map_err(|_| Mishap(anyhow!("Read lock fail")))?;
+
+    let frags: Vec<String> = dogdb
         .dogs()
         .iter()
         .map(dog_row)
         .map(|m| m.into_string())
         .collect();
-    frags.concat().into_response()
+
+    Ok(frags.concat().into_response())
 }
 
 //

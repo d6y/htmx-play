@@ -6,6 +6,7 @@ use axum::{
 use tower_http::services::ServeDir;
 
 mod apps;
+mod mishap;
 
 #[tokio::main]
 async fn main() {
