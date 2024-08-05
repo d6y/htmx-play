@@ -1,16 +1,20 @@
 use axum::{
+    extract::State,
     response::{Html, IntoResponse, Response},
     routing::get,
-    Router,
+    Form, Router,
 };
 use maud::{html, Markup};
 
-use once_cell::sync::Lazy;
 use std::{
     collections::HashMap,
-    sync::{Arc, Mutex},
+    sync::{Arc, RwLock},
 };
 use uuid;
+
+//
+// Datastructure and a fake in-memory database
+//
 
 #[derive(Clone, Debug)]
 struct Dog {
@@ -30,73 +34,90 @@ impl Dog {
     }
 }
 
-//
-// Fake in-memory dog database
-//
-
-type DogTable = HashMap<String, Dog>;
-type AppState = Arc<Mutex<DogTable>>;
-
-static DOG_DB: Lazy<AppState> = Lazy::new(|| {
-    let comet = Dog::new("Comet", "Whippet");
-    let oscar = Dog::new("Oscar", "German Shorthaired Pointer");
-
-    let doggies = HashMap::from([(comet.id.clone(), comet), (oscar.id.clone(), oscar)]);
-    Arc::new(Mutex::new(doggies))
-});
-
-fn with_db<T, F>(f: F) -> T
-where
-    F: FnOnce(&mut DogTable) -> T,
-{
-    let mut lock = DOG_DB.lock().unwrap();
-    f(&mut lock)
+struct DogDB {
+    dogs: HashMap<String, Dog>,
 }
 
-// fn db_add_dog(dog: Dog) {
-// let mut dogs = DOG_DB.lock().unwrap();
-// let _maybe_preexisting_dog = dogs.insert(dog.id.clone(), dog);
-// }
+impl DogDB {
+    fn new() -> DogDB {
+        let comet = Dog::new("Comet", "Whippet");
+        let oscar = Dog::new("Oscar", "German Shorthaired Pointer");
 
-// fn num_dogs() -> usize {
-// let dogs = DOG_DB.lock().unwrap();
-// dogs.len()
-// }
+        DogDB {
+            dogs: HashMap::from([(comet.id.clone(), comet), (oscar.id.clone(), oscar)]),
+        }
+    }
 
-// fn seed_db_if_empty() {
-// }
+    fn dogs(&self) -> Vec<Dog> {
+        self.dogs.values().cloned().collect()
+    }
+
+    fn insert(&mut self, dog: Dog) {
+        self.dogs.insert(dog.id.clone(), dog);
+    }
+}
+
+type SharedState = Arc<RwLock<DogDB>>;
+
+//
+// Forms, routes and route handers
+//
+
+#[derive(serde::Deserialize)]
+struct NewDog {
+    name: String,
+    breed: String,
+}
 
 pub fn routes() -> Router {
+    let db = DogDB::new();
+
     Router::new()
-        .route("/dogs", get(index))
+        .route("/dogs", get(index).post(add))
         .route("/dogs/table-rows", get(table_rows))
+        .with_state(Arc::new(RwLock::new(db)))
 }
 
 async fn index() -> Response {
     Html(include_str!("../../../templates/dogs.html")).into_response()
 }
 
-fn dog_row(dog: &Dog) -> Markup {
-    html! {
-            tr class="on-hover" {
-                td { (dog.name)  }
-                td { (dog.breed) }
-                td class="buttons" {
-                    button
-                        class="show-on-hover"
-                        hx-delete=(dog.id)
-                        hx-confirm="Are you sure?"
-                        hx-target="closest tr"
-                        hx-swap="delete" { "x" }
-
-                }
-
-        }
-    }
+async fn add(State(state): State<SharedState>, Form(form): Form<NewDog>) -> Response {
+    let dog = Dog::new(&form.name, &form.breed);
+    state.write().unwrap().insert(dog.clone());
+    dog_row(&dog).into_response()
 }
 
-async fn table_rows() -> Response {
-    let dogs: Vec<Dog> = with_db(|dogs| dogs.values().cloned().collect());
-    let frags: Vec<String> = dogs.iter().map(dog_row).map(|m| m.into_string()).collect();
+async fn table_rows(State(state): State<SharedState>) -> Response {
+    let frags: Vec<String> = state
+        .read()
+        .unwrap()
+        .dogs()
+        .iter()
+        .map(dog_row)
+        .map(|m| m.into_string())
+        .collect();
     frags.concat().into_response()
+}
+
+//
+// HTML serialization
+//
+
+fn dog_row(dog: &Dog) -> Markup {
+    html! {
+        tr class="on-hover" {
+            td { (dog.name)  }
+            td { (dog.breed) }
+            td class="buttons" {
+                button
+                    class="show-on-hover"
+                    hx-delete=(dog.id)
+                    hx-confirm="Are you sure?"
+                    hx-target="closest tr"
+                    hx-swap="delete"
+                    { "x" }
+            }
+        }
+    }
 }

@@ -220,7 +220,7 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "maud",
- "once_cell",
+ "serde",
  "tokio",
  "tower",
  "tower-http",
