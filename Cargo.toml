@@ -4,24 +4,20 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-uuid = { version = "1", features = ["v7"] }
-anyhow = "1"
+# Serde required for axum form deserialization
+serde = { version = "1", features = ["derive"] }
 
+tokio = { version = "1", features = ["full"] }
 axum = "0.7"
 tower = "0.4"
 tower-http = { version = "0.5", features = ["fs", "trace"] }
 tower-livereload = "0.9"
+
 maud = { version = "0.26", features = ["axum"] }
 
-# Required for form deserialization in axum
-serde = { version = "1", features = ["derive"] }
+uuid = { version = "1", features = ["v7", "serde"] }
+anyhow = "1"
 
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-tokio = { version = "1", features = ["full"] }
-
-
-
-
 

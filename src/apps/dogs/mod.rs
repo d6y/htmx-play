@@ -1,9 +1,10 @@
 use crate::mishap::Mishap;
 use anyhow::anyhow;
 use axum::{
-    extract::State,
+    extract::{Path, State},
+    http::StatusCode,
     response::{Html, IntoResponse, Response},
-    routing::get,
+    routing::{delete, get},
     Form, Router,
 };
 use maud::{html, Markup};
@@ -11,7 +12,7 @@ use std::{
     collections::HashMap,
     sync::{Arc, RwLock},
 };
-use uuid;
+use uuid::Uuid;
 
 //
 // Datastructure and a fake in-memory database
@@ -26,7 +27,7 @@ struct Dog {
 
 impl Dog {
     fn new(name: &str, breed: &str) -> Dog {
-        let id = uuid::Uuid::now_v7();
+        let id = Uuid::now_v7();
         Dog {
             id: id.to_string(),
             name: name.to_string(),
@@ -56,6 +57,10 @@ impl DogDB {
     fn insert(&mut self, dog: Dog) {
         self.dogs.insert(dog.id.clone(), dog);
     }
+
+    fn delete(&mut self, id: Uuid) {
+        let _before_delete = self.dogs.remove(&id.to_string());
+    }
 }
 
 type SharedState = Arc<RwLock<DogDB>>;
@@ -74,8 +79,9 @@ pub fn routes() -> Router {
     let db = DogDB::new();
 
     Router::new()
-        .route("/dogs", get(index).post(add))
+        .route("/dogs", get(index).post(add_dog))
         .route("/dogs/table-rows", get(table_rows))
+        .route("/dogs/:id", delete(delete_dog))
         .with_state(Arc::new(RwLock::new(db)))
 }
 
@@ -83,7 +89,7 @@ async fn index() -> Response {
     Html(include_str!("../../../templates/dogs.html")).into_response()
 }
 
-async fn add(
+async fn add_dog(
     State(state): State<SharedState>,
     Form(form): Form<NewDog>,
 ) -> Result<Response, Mishap> {
@@ -95,6 +101,18 @@ async fn add(
 
     db.insert(dog.clone());
     Ok(dog_row(&dog).into_response())
+}
+
+async fn delete_dog(
+    Path(id): Path<Uuid>,
+    State(state): State<SharedState>,
+) -> Result<Response, Mishap> {
+    let mut db = state
+        .write()
+        .map_err(|_| Mishap(anyhow!("Write lock fail")))?;
+
+    db.delete(id);
+    Ok(StatusCode::OK.into_response())
 }
 
 async fn table_rows(State(state): State<SharedState>) -> Result<Response, Mishap> {
@@ -117,6 +135,8 @@ async fn table_rows(State(state): State<SharedState>) -> Result<Response, Mishap
 //
 
 fn dog_row(dog: &Dog) -> Markup {
+    let dog_url = format!("/dogs/{}", dog.id);
+
     html! {
         tr class="on-hover" {
             td { (dog.name)  }
@@ -124,7 +144,7 @@ fn dog_row(dog: &Dog) -> Markup {
             td class="buttons" {
                 button
                     class="show-on-hover"
-                    hx-delete=(dog.id)
+                    hx-delete=(dog_url)
                     hx-confirm="Are you sure?"
                     hx-target="closest tr"
                     hx-swap="delete"
