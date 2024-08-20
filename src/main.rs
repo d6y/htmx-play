@@ -1,4 +1,5 @@
 use axum::{
+    http::Request,
     response::{Html, IntoResponse, Response},
     routing::get,
     Router,
@@ -14,14 +15,23 @@ async fn main() {
 
     let assets = Router::new().nest_service("/assets", ServeDir::new("assets"));
 
-    let app = Router::new()
+    let routes = Router::new()
         .route("/", get(root))
-        .merge(assets)
+        .route("/version", get(version))
         .merge(apps::dogs::routes())
-        .route("/version", get(version));
+        .merge(apps::oob::routes());
+
+    let app = Router::new().merge(assets).merge(routes);
+
+    // During developemtn we want live-reload, but not of the htmx snippets
 
     #[cfg(debug_assertions)]
-    let app = app.layer(tower_livereload::LiveReloadLayer::new());
+    fn not_htmx<Body>(req: &Request<Body>) -> bool {
+        !req.headers().contains_key("hx-request")
+    }
+
+    #[cfg(debug_assertions)]
+    let app = app.layer(tower_livereload::LiveReloadLayer::new().request_predicate(not_htmx));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await

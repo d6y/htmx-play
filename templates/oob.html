@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>iOut-of-band example</title>
+
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/htmx@2.0.1.min.js"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <body>
+    <h1>Out-of-band example</h1>
+
+    <button hx-get="/oob/demo" hx-target="#target1">Send</button> 
+    
+    <div id="target1">original 1</div>
+    <div id="target2">original 2</div>
+    <div id="target3">original 3</div>
+  </body>
+</html>

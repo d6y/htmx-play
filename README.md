@@ -10,7 +10,10 @@ Then browse to <http://localhost:3000>
 
 First part of "Jumping in" is in `main.rs` and also tagged as `p01-hello-world` in this repo.
 
-Part two, "Creating a CRUD application", is in `dogs.rs` (and `.html`, and `.css`) files. Tagged here as `p02-crud`.
+The second part of chapter 1, "Creating a CRUD application", is in `dogs.rs` (and `.html`, and `.css`) files. Tagged here as `p02-crud`.
+
+Chapter three, "Developing endponts", follows the patterm of a module, html page with names to match the sections.
+E.g., "oob" for the "Performing Out-of-Band Swaps" example.
 
 
 ## Libraries
