@@ -17,10 +17,10 @@ async fn index() -> Response {
 
 async fn demo() -> Response {
     html! {
-    div { "new 1" }
-    div id="target2" hx-swap-oob="true" { "new 2" }
-    div id="target2" hx-swap-oob="afterend" { "after 2" }
-    div hx-swap-oob="innerHTML:#target3" { "new 3" }
+        div { "new 1" }
+        div id="target2" hx-swap-oob="true" { "new 2" }
+        div id="target2" hx-swap-oob="afterend" { "after 2" }
+        div hx-swap-oob="innerHTML:#target3" { "new 3" }
     }
     .into_response()
 }
