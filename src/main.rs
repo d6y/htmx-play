@@ -19,7 +19,8 @@ async fn main() {
         .route("/", get(root))
         .route("/version", get(version))
         .merge(apps::dogs::routes())
-        .merge(apps::oob::routes());
+        .merge(apps::oob::routes())
+        .merge(apps::trigger::routes());
 
     let app = Router::new().merge(assets).merge(routes);
 
