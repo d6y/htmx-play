@@ -8,15 +8,24 @@ Then browse to <http://localhost:3000>
 
 ## Book notes
 
+### Chapter 1
+
 First part of "Jumping in" is in `main.rs` and also tagged as `p01-hello-world` in this repo.
 
 The second part of chapter 1, "Creating a CRUD application", is in `dogs.rs` (and `.html`, and `.css`) files. Tagged here as `p02-crud`.
 
-Chapter three, "Developing endponts", follows the patterm of a module, html page with names to match the sections.
-E.g., "oob" for the "Performing Out-of-Band Swaps" example.
+### Chapter 3
+
+"Developing endponts", follows the patterm of a module, html page with names to match the sections: 
+
+- "oob" (`oob.html`, `oob/mod.rs`) for the "Performing Out-of-Band Swaps"
+- "triggers" for the event triggers.
+- the "dogs" example was updated in this chapter to support update.
+
+Taggeg in git as `ch-3`.
 
 
-## Libraries
+## Libraries used
 
 - https://docs.rs/axum/latest/axum/index.html
 - https://maud.lambda.xyz
