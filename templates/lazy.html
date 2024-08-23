@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>Lazy example</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/htmx@2.0.1.min.js"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <body>
+    <h1>Lazy loading example</h1>
+
+    <div id="user-block"> 
+      <div class="htmx-indicator"></div>
+      <div
+        hx-get="/lazy/users" 
+        hx-indicator=".htmx-indicator" 
+        hx-trigger="revealed"></div>
+    </div>
+
+  </body>
+</html>

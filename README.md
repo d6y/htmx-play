@@ -24,6 +24,10 @@ The second part of chapter 1, "Creating a CRUD application", is in `dogs.rs` (an
 
 Taggeg in git as `ch-3`.
 
+### Chapter 4
+
+- "lazy"
+
 
 ## Libraries used
 

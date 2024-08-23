@@ -6,3 +6,48 @@ button {
   margin-bottom: 1rem;
   padding: 0.5rem;
 }
+
+#user-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Spinner */
+
+.htmx-indicator {
+    width: 50px;
+    height: 50px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: strong;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
