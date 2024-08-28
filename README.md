@@ -26,7 +26,10 @@ Taggeg in git as `ch-3`.
 
 ### Chapter 4
 
-- "lazy"
+`apps` are:
+
+- "lazy" for lazy loading.
+- "validate" for input validation. Note that the [online example](https://github.com/mvolkmann/htmx-examples/blob/f394f778794b21f6cfd58c474ccd3f75c6972a45/input-validation/src/server.tsx) is considerably more involved that the example in the book.
 
 
 ## Libraries used

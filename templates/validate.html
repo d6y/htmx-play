@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email validate example</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/htmx@2.0.1.min.js"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <body>
+    <h1>Input validation example</h1>
+
+    <p>Try: anything@example.org</p>
+
+    <form>
+      <label for="email">Email</label>
+      <input 
+        id="email" name="email" type="email" autocomplete="off" size="30"
+        hx-get="/validate/email-validate" 
+        hx-target="#email-error" 
+        hx-trigger="keyup changed delay:200ms">
+      </input>
+    <span class="error" id="email-error"></span>
+    </form>
+
+ </body>
+</html>
