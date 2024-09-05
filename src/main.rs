@@ -22,7 +22,8 @@ async fn main() {
         .merge(apps::oob::routes())
         .merge(apps::trigger::routes())
         .merge(apps::lazy::routes())
-        .merge(apps::validate::routes());
+        .merge(apps::validate::routes())
+        .merge(apps::pagination::routes());
 
     let app = Router::new().merge(assets).merge(routes);
 
