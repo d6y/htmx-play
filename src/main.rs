@@ -7,6 +7,7 @@ use axum::{
 use tower_http::services::ServeDir;
 
 mod apps;
+mod components;
 mod mishap;
 
 #[tokio::main]
@@ -27,7 +28,7 @@ async fn main() {
 
     let app = Router::new().merge(assets).merge(routes);
 
-    // During developemtn we want live-reload, but not of the htmx snippets
+    // During development we want live-reload, but not of the htmx snippets
 
     #[cfg(debug_assertions)]
     fn not_htmx<Body>(req: &Request<Body>) -> bool {
