@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Infinite Scroll</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/htmx@2.0.1.min.js"></script>
+  <script src="/assets/events.js"></script>
+</head>
+<body>
+  <body>
+    <h1>Infinite scrollexample</h1>
+
+    <table
+      hx-trigger="load"
+      hx-get="/infiniscroll/image-rows?page=1"
+      hx-indicator=".htmx-indicator"
+      hx-swap="beforeend"
+    >
+      <tr>
+        <th>Name</th>
+        <th>Image</th>
+      </tr>
+    </table>
+    <div class="htmx-indicator"></div>
+ </body>
+</html>

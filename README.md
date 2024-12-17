@@ -31,10 +31,11 @@ Taggeg in git as `ch-3`.
 - "lazy" for lazy loading.
 - "validate" for input validation. Note that the [online example](https://github.com/mvolkmann/htmx-examples/blob/f394f778794b21f6cfd58c474ccd3f75c6972a45/input-validation/src/server.tsx) is considerably more involved that the example in the book.
 - "pagination" for a version of the next/previous example.
+- "infiniscroll", for infinite scroll variation on pagination.
 
 
 ## Libraries used
 
-- https://docs.rs/axum/latest/axum/index.html
-- https://maud.lambda.xyz
+- https://docs.rs/axum/latest/axum/index.html — a Rust web server.
+- https://maud.lambda.xyz — compile-time HTML templates.
 
