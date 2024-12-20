@@ -13,6 +13,10 @@ serde_json = "1"
 # For making fun example names
 rand = "0.8"
 
+# For session-based storage in the "toggle" example
+axum_session = { version = "0.14" }
+
+
 tokio = { version = "1", features = ["full"] }
 axum = "0.7"
 tower = "0.4"
