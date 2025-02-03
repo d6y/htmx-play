@@ -4,7 +4,7 @@ use axum::{
     Router,
 };
 use maud::{html, Markup};
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 
 pub fn routes() -> Router {
     Router::new()
@@ -20,7 +20,7 @@ async fn users() -> Response {
     // Pretend this takes a while:
     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let users = User::randos(&mut rng).take(8);
 
     html! {

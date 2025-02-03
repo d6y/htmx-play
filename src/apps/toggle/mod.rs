@@ -18,7 +18,7 @@ pub async fn routes() -> Router {
     Router::new()
         .route("/toggle", get(index))
         .route("/toggle/buttons", get(buttons))
-        .route("/toggle/toggle/:name", get(toggle))
+        .route("/toggle/toggle/{name}", get(toggle))
         .layer(SessionLayer::new(store))
 }
 

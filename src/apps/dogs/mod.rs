@@ -1,10 +1,11 @@
 use crate::mishap::Mishap;
 use anyhow::anyhow;
+use axum::response::IntoResponse;
 use axum::{
     body::Body,
     extract::{Path, State},
     http::StatusCode,
-    response::{Html, IntoResponse, Response},
+    response::{Html, Response},
     routing::{get, put},
     Form, Router,
 };
@@ -103,10 +104,10 @@ pub fn routes() -> Router {
     Router::new()
         .route("/dogs", get(index).post(add_dog))
         .route("/dogs/form", get(stateful_form))
-        .route("/dogs/select/:id", put(select_dog))
+        .route("/dogs/select/{id}", put(select_dog))
         .route("/dogs/deselect", put(deselect))
         .route("/dogs/table-rows", get(table_rows))
-        .route("/dogs/:id", put(update_dog).delete(delete_dog))
+        .route("/dogs/{id}", put(update_dog).delete(delete_dog))
         .with_state(Arc::new(RwLock::new(db)))
 }
 
@@ -125,7 +126,8 @@ async fn add_dog(
         .map_err(|_| Mishap(anyhow!("Write lock fail")))?;
 
     db.insert(dog.clone());
-    Ok(dog_row(&dog, None).into_response())
+    let markup = dog_row(&dog, None);
+    Ok(markup.into_response())
 }
 
 async fn delete_dog(
